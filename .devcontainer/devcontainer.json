@@ -1,0 +1,14 @@
+{
+	"name": "emoji-gen-bot",
+	"build": {
+		"context": "..",
+		"dockerfile": "../Dockerfile"
+	},
+	"postCreateCommand": "cp /work/third_party/libemoji/lib/libemoji.a /workspaces/emoji-gen-bot/third_party/libemoji/lib/",
+	"features": {
+		"ghcr.io/devcontainers/features/go:1": {}
+	},
+	"settings": {
+		"editor.formatOnSave": true
+	}
+}
