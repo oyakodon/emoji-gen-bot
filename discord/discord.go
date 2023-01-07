@@ -36,8 +36,25 @@ func (bot *DiscordBot) SetNickname(nickname string) {
 	bot.nickname = nickname
 }
 
+func (bot *DiscordBot) MaxEmojiCount(s *discordgo.Session) int {
+	m := map[discordgo.PremiumTier]int{
+		discordgo.PremiumTierNone: 50,
+		discordgo.PremiumTier1:    100,
+		discordgo.PremiumTier2:    150,
+		discordgo.PremiumTier3:    250,
+	}
+
+	g, _ := s.Guild(bot.guildId)
+	return m[g.PremiumTier]
+}
+
+func (bot *DiscordBot) EmojiCount(s *discordgo.Session) int {
+	emojis, _ := s.GuildEmojis(bot.guildId)
+	return len(emojis)
+}
+
 // isephemeral: 送信したユーザにのみ表示される
-func (bot *DiscordBot) respond(s *discordgo.Session, i *discordgo.Interaction, message string, isephemeral bool, attachment []*discordgo.File) error {
+func (bot *DiscordBot) Respond(s *discordgo.Session, i *discordgo.Interaction, message string, isephemeral bool, attachment []*discordgo.File) error {
 	data := &discordgo.InteractionResponseData{
 		Content: message,
 	}
