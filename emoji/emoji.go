@@ -14,11 +14,13 @@ var (
 type EmojiTextAlign int
 
 const (
-	EmojiDefaultFontPath = "./assets/NotoSansMonoCJKjp-Bold.otf"
-
 	EmojiAlignLeft EmojiTextAlign = iota
 	EmojiAlignCenter
 	EmojiAlignRight
+)
+
+const (
+	EmojiDefaultFontPath = "./assets/NotoSansMonoCJKjp-Bold.otf"
 
 	EmojiSizeMDPI = 128
 
@@ -48,7 +50,7 @@ func generateEmojiPng(text string, width, height, fgColor, bgColor int, align Em
 		fColor:           C.uint(fgColor),
 		fBackgroundColor: C.uint(bgColor),
 		fTextAlign:       C.EgAlign(align),
-		fTextSizeFixed:   true,  // 文字サイズを固定
+		fTextSizeFixed:   false, // 文字サイズを固定
 		fDisableStretch:  false, //	自動で伸縮しない
 		fTypefaceFile:    C.CString(fontpath),
 		fFormat:          C.kPNG_Format,
