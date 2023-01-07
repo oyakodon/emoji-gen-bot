@@ -1,6 +1,8 @@
 package discord
 
 import (
+	"encoding/base64"
+	"errors"
 	"os"
 	"os/signal"
 
@@ -10,6 +12,16 @@ import (
 )
 
 var logger _logger.Logger = _logger.NewZapLogger()
+
+const (
+	CONTENT_TYPE_IMAGE_PNG = "image/png"
+)
+
+var (
+	MAX_SIZE_EMOJI = 256 * 1024 // 256 KB = 256 * 1024 B
+
+	ErrExceedEmojiSize = errors.New("exceed emoji size: >=256KB")
+)
 
 type DiscordBot struct {
 	token   string
@@ -51,6 +63,23 @@ func (bot *DiscordBot) MaxEmojiCount(s *discordgo.Session) int {
 func (bot *DiscordBot) EmojiCount(s *discordgo.Session) int {
 	emojis, _ := s.GuildEmojis(bot.guildId)
 	return len(emojis)
+}
+
+func (bot *DiscordBot) CreateEmoji(s *discordgo.Session, name string, data []byte) error {
+	image := base64.StdEncoding.EncodeToString(data)
+	if len(image) >= MAX_SIZE_EMOJI {
+		return ErrExceedEmojiSize
+	}
+
+	_, err := s.GuildEmojiCreate(bot.guildId, &discordgo.EmojiParams{
+		Name:  name,
+		Image: "data:" + CONTENT_TYPE_IMAGE_PNG + ";base64," + image,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // isephemeral: 送信したユーザにのみ表示される
