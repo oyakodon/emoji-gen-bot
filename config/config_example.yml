@@ -1,0 +1,5 @@
+bottoken: (DiscordのBotToken)
+guildid: (DiscordのサーバID)
+channels:
+  - (ボットを使いたいDiscordのチャンネルID)
+nickname: 絵文字生成奴 # 任意の名前
