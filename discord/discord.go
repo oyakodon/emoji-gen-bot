@@ -36,6 +36,26 @@ func (bot *DiscordBot) SetNickname(nickname string) {
 	bot.nickname = nickname
 }
 
+// isephemeral: 送信したユーザにのみ表示される
+func (bot *DiscordBot) respond(s *discordgo.Session, i *discordgo.Interaction, message string, isephemeral bool, attachment []*discordgo.File) error {
+	data := &discordgo.InteractionResponseData{
+		Content: message,
+	}
+
+	if isephemeral {
+		data.Flags = discordgo.MessageFlagsEphemeral
+	}
+
+	if len(attachment) > 0 {
+		data.Files = attachment
+	}
+
+	return s.InteractionRespond(i, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: data,
+	})
+}
+
 func (bot *DiscordBot) Run() error {
 	logger.Info("Connecting...")
 
