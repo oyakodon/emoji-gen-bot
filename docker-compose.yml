@@ -5,6 +5,5 @@ services:
     build:
       context: .
       dockerfile: './docker/Dockerfile.dev'
-    command: go run main.go
     volumes:
       - "./:/work"

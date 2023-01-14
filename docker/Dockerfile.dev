@@ -42,6 +42,8 @@ RUN cd libemoji && \
 
 FROM golang:1.19.4-buster AS base
 
+ARG AIR_VERSION=1.41.0
+
 WORKDIR /work
 
 RUN apt-get update && apt-get install -y \
@@ -56,3 +58,7 @@ COPY --from=build /work/libemoji/lib/ /work/third_party/libemoji/lib/
 
 COPY go.mod go.sum ./
 RUN go mod download
+
+RUN go install github.com/cosmtrek/air@v${AIR_VERSION}
+
+CMD ["air", "-c", ".air.toml"]
