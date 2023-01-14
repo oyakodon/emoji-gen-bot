@@ -1,5 +1,7 @@
 FROM debian:buster AS build
 
+ARG TARGETPLATFORM
+
 WORKDIR /work
 
 RUN apt-get update && apt-get install -y \
@@ -24,6 +26,15 @@ RUN apt-get update && apt-get install -y \
 
 # build libemoji
 RUN git clone https://github.com/oyakodon/libemoji.git libemoji -b develop --recursive
+
+# for arm64 build
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+    echo "building for ARM64..." && \
+    apt-get update && apt-get install -y ninja-build && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    cd libemoji && \
+    sed -i -E 's/target_cpu="x64"/target_cpu="arm64"/g' CMakeLists.txt && \
+    sed -i -E 's/externals\/depot_tools\/ninja/\/usr\/bin\/ninja/g' CMakeLists.txt ;\
+    fi
 
 RUN cd libemoji && \
     cmake . && \
