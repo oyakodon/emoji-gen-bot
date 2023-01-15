@@ -2,6 +2,17 @@
 
 Discordで送られてきたテキストから絵文字を生成して返すボット。
 
+## 使い方
+
+1. ボットが反応するチャンネルでコマンドを入力する
+    - `/emoji gen name:zoi text:ぞい！ color:f39800`
+2. 生成された絵文字を確認し、OKなら「登録」を押す
+   - <img src="https://github.com/oyakodon/emoji-gen-bot/raw/images/assets/readme_cmd_gen.png" width="128px" />
+3. 登録完了！
+    - <img src="https://github.com/oyakodon/emoji-gen-bot/raw/images/assets/readme_generated.png" width="128px" />
+    - 登録された絵文字はすぐ使えます。
+    - また、絵文字生成通知チャンネルに生成された旨が通知されます。
+
 ## コマンド一覧
 
 - Discord上で使うときは、補完が効くのでコマンドを覚えていなくても大丈夫。
