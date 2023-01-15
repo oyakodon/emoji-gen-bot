@@ -44,11 +44,18 @@ type generatedEmoji struct {
 	Data    []byte
 }
 
+type EmojiGenBotFont struct {
+	Id       string
+	Name     string
+	FontPath string
+}
+
 type EmojiGenBot struct {
 	*DiscordBot
 
 	channels        []string
 	noticeChannelId string
+	fonts           []*EmojiGenBotFont
 
 	ch chan emojiEvent
 }
@@ -70,11 +77,22 @@ func (b EmojiGenBot) generateEmoji(opts map[string]string) (*generatedEmoji, err
 		align = emoji.EmojiAlignRight
 	}
 
-	data, err := emoji.GenerateEmoji(
+	fontpath := b.fonts[0].FontPath
+	if fontchoice, ok := opts["font"]; ok {
+		for _, f := range b.fonts {
+			if f.Id == fontchoice {
+				fontpath = f.FontPath
+				break
+			}
+		}
+	}
+
+	data, err := emoji.GenerateEmojiWithFont(
 		text,
 		int(colorcode),
 		emoji.EmojiColorTransparent,
 		align,
+		fontpath,
 	)
 	if err != nil {
 		return nil, err
@@ -323,6 +341,7 @@ func (b EmojiGenBot) interaction(s *discordgo.Session, i *discordgo.InteractionC
 func NewEmojiGenBot(
 	bottoken, guildId, nickname, noticechannelid string,
 	channels []string,
+	fonts []*EmojiGenBotFont,
 ) *EmojiGenBot {
 	bot := &EmojiGenBot{
 		DiscordBot: NewDiscordBot(
@@ -333,9 +352,78 @@ func NewEmojiGenBot(
 		channels:        channels,
 		noticeChannelId: noticechannelid,
 		ch:              make(chan emojiEvent),
+		fonts:           fonts,
 	}
 
 	bot.SetNickname(nickname)
+
+	// コマンド共通オプションを定義
+	cmdopts := []*discordgo.ApplicationCommandOption{
+		{
+			Type:        discordgo.ApplicationCommandOptionString,
+			Name:        "text",
+			Description: "テキスト",
+			Required:    true,
+		},
+		{
+			Type:        discordgo.ApplicationCommandOptionString,
+			Name:        "color",
+			Description: "文字色のカラーコード (ex: FFFFFF)",
+			Required:    false,
+		},
+		{
+			Name:        "align",
+			Description: "テキストの文字揃え",
+			Type:        discordgo.ApplicationCommandOptionString,
+			Choices: []*discordgo.ApplicationCommandOptionChoice{
+				{
+					Name:  "中央揃え",
+					Value: "center",
+				},
+				{
+					Name:  "左揃え (デフォルト)",
+					Value: "left",
+				},
+				{
+					Name:  "右揃え",
+					Value: "right",
+				},
+			},
+			Required: false,
+		},
+	}
+
+	// 設定からフォントを読み込んで選択肢に追加
+	if len(fonts) == 0 {
+		panic("No fonts registered in config!")
+	}
+
+	fontchoices := make([]*discordgo.ApplicationCommandOptionChoice, 0)
+	for _, f := range fonts {
+		fontchoices = append(fontchoices, &discordgo.ApplicationCommandOptionChoice{
+			Name:  f.Name,
+			Value: f.Id,
+		})
+	}
+
+	cmdopts = append(cmdopts, &discordgo.ApplicationCommandOption{
+		Name:        "font",
+		Description: "文字フォント",
+		Type:        discordgo.ApplicationCommandOptionString,
+		Choices:     fontchoices,
+		Required:    false,
+	})
+
+	// 生成コマンド: 絵文字名のオプションを追加
+	cmdoptsgen := append([]*discordgo.ApplicationCommandOption{
+		{
+			Type:        discordgo.ApplicationCommandOptionString,
+			Name:        "name",
+			Description: "絵文字名",
+			Required:    true,
+		},
+	}, cmdopts...)
+
 	bot.AddCommand(&discordgo.ApplicationCommand{
 		Name:        EmojiGenCommandName,
 		Description: EmojiGenCommandDescription,
@@ -344,85 +432,13 @@ func NewEmojiGenBot(
 				Name:        EmojiGenSubcommandGenerate,
 				Description: EmojiGenSubcommandGenerateDescription,
 				Type:        discordgo.ApplicationCommandOptionSubCommand,
-				Options: []*discordgo.ApplicationCommandOption{
-					{
-						Type:        discordgo.ApplicationCommandOptionString,
-						Name:        "name",
-						Description: "絵文字名",
-						Required:    true,
-					},
-					{
-						Type:        discordgo.ApplicationCommandOptionString,
-						Name:        "text",
-						Description: "テキスト",
-						Required:    true,
-					},
-					{
-						Type:        discordgo.ApplicationCommandOptionString,
-						Name:        "color",
-						Description: "文字色のカラーコード (ex: FFFFFF)",
-						Required:    false,
-					},
-					{
-						Name:        "align",
-						Description: "テキストの文字揃え",
-						Type:        discordgo.ApplicationCommandOptionString,
-						Choices: []*discordgo.ApplicationCommandOptionChoice{
-							{
-								Name:  "中央揃え",
-								Value: "center",
-							},
-							{
-								Name:  "左揃え (デフォルト)",
-								Value: "left",
-							},
-							{
-								Name:  "右揃え",
-								Value: "right",
-							},
-						},
-						Required: false,
-					},
-				},
+				Options:     cmdoptsgen,
 			},
 			{
 				Name:        EmojiGenSubcommandPreview,
 				Description: EmojiGenSubcommandPreviewDescription,
 				Type:        discordgo.ApplicationCommandOptionSubCommand,
-				Options: []*discordgo.ApplicationCommandOption{
-					{
-						Type:        discordgo.ApplicationCommandOptionString,
-						Name:        "text",
-						Description: "テキスト",
-						Required:    true,
-					},
-					{
-						Type:        discordgo.ApplicationCommandOptionString,
-						Name:        "color",
-						Description: "文字色のカラーコード (ex: FFFFFF)",
-						Required:    false,
-					},
-					{
-						Name:        "align",
-						Description: "テキストの文字揃え",
-						Type:        discordgo.ApplicationCommandOptionString,
-						Choices: []*discordgo.ApplicationCommandOptionChoice{
-							{
-								Name:  "中央揃え",
-								Value: "center",
-							},
-							{
-								Name:  "左揃え (デフォルト)",
-								Value: "left",
-							},
-							{
-								Name:  "右揃え",
-								Value: "right",
-							},
-						},
-						Required: false,
-					},
-				},
+				Options:     cmdopts,
 			},
 		},
 	})

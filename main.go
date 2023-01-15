@@ -19,12 +19,22 @@ func main() {
 		return
 	}
 
+	fonts := make([]*discord.EmojiGenBotFont, 0)
+	for _, f := range conf.Fonts {
+		fonts = append(fonts, &discord.EmojiGenBotFont{
+			Id:       f.Id,
+			Name:     f.Name,
+			FontPath: f.Path,
+		})
+	}
+
 	bot := discord.NewEmojiGenBot(
 		conf.BotToken,
 		conf.GuildId,
 		conf.Nickname,
 		conf.NoticeChannelId,
 		conf.Channels,
+		fonts,
 	)
 
 	if err := bot.Run(); err != nil {
