@@ -4,11 +4,19 @@ Discordで送られてきたテキストから絵文字を生成して返すボ�
 
 ## 動かすには
 
-1. `config/config.yml`を変更
+1. ボットを登録
+    - <https://discord.com/developers/applications> でアプリケーション・ボットを作成
+    - 下記権限を追加してボットをサーバーに招待
+      - `Change Nickname`
+      - `Manage Emojis and Stickers`
+      - `Read Messages/View Channels`
+      - `Send Messages`
+      - (URL: `https://discord.com/api/oauth2/authorize?client_id=<client_id>&permissions=1140853760&scope=bot`)
+2. `config/config.yml`を変更
     - `config_example.yml`を参考に
-2. `docker-compose build`
+3. `docker-compose build`
     - (とても時間がかかる)
-3. `docker-compose up -d`
+4. `docker-compose up -d`
     - air (Goのホットリロードツール)でアプリケーションが起動
 
 ## 開発環境
