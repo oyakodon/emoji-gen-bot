@@ -29,10 +29,16 @@ Discordで送られてきたテキストから絵文字を生成して返すボ�
 |`name`|登録する絵文字の名前|(`gen`のみ必須)|
 |`text`|絵文字のテキスト|必須|
 |`color`|絵文字の文字色 (カラーコード, ex: FFFFFF)|デフォルト: 000000 (黒)|
-|`align`|絵文字テキストの文字揃え|[center, left, right] デフォルト: left|
+|`align`|絵文字テキストの文字揃え|[left, center, right] デフォルト: left|
 |`font`|絵文字の文字フォント|設定に依る, exampleと同じであれば [mp1pblack, notosansmono]|
 
-## 動かすには
+## 開発者向け
+
+- Docker環境必須
+  - Windows 10(Intel x86_64, Docker Desktop)とmacOS Ventura 13.1(M1 arm64, lima + Docker) で動作確認済み
+- VSCode + devcontainer推奨 (CGOの警告が消えないので)
+
+### 動かすには
 
 1. ボットを登録
     - <https://discord.com/developers/applications> でアプリケーション・ボットを作成
@@ -43,15 +49,11 @@ Discordで送られてきたテキストから絵文字を生成して返すボ�
       - `Send Messages`
       - (URL: `https://discord.com/api/oauth2/authorize?client_id=<client_id>&permissions=1140853760&scope=bot`)
 2. `config/config.yml`を変更
-    - `config_example.yml`を参考に
+    - `config_example.yml`を参考にトークンなど埋める
 3. `docker-compose build`
     - (とても時間がかかる)
 4. `docker-compose up -d`
     - air (Goのホットリロードツール)でアプリケーションが起動
-
-## 開発環境
-
-- devcontainer推奨 (CGOの警告が消せないので)
 
 ### libemoji
 
