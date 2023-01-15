@@ -102,6 +102,12 @@ func (bot *DiscordBot) Respond(s *discordgo.Session, i *discordgo.Interaction, m
 	})
 }
 
+// チャンネルにメッセージを送信する
+func (bot *DiscordBot) SendMessage(s *discordgo.Session, channelid, message string) error {
+	_, err := s.ChannelMessageSend(channelid, message)
+	return err
+}
+
 func (bot *DiscordBot) Run() error {
 	logger.Info("Connecting...")
 
