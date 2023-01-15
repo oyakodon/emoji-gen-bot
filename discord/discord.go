@@ -65,21 +65,21 @@ func (bot *DiscordBot) EmojiCount(s *discordgo.Session) int {
 	return len(emojis)
 }
 
-func (bot *DiscordBot) CreateEmoji(s *discordgo.Session, name string, data []byte) error {
+func (bot *DiscordBot) CreateEmoji(s *discordgo.Session, name string, data []byte) (string, error) {
 	image := base64.StdEncoding.EncodeToString(data)
 	if len(image) >= MAX_SIZE_EMOJI {
-		return ErrExceedEmojiSize
+		return "", ErrExceedEmojiSize
 	}
 
-	_, err := s.GuildEmojiCreate(bot.guildId, &discordgo.EmojiParams{
+	e, err := s.GuildEmojiCreate(bot.guildId, &discordgo.EmojiParams{
 		Name:  name,
 		Image: "data:" + CONTENT_TYPE_IMAGE_PNG + ";base64," + image,
 	})
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return e.MessageFormat(), nil
 }
 
 // isephemeral: 送信したユーザにのみ表示される
