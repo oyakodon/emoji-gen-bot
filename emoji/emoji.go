@@ -42,6 +42,21 @@ func GenerateEmoji(text string, fgColor, bgColor int, align EmojiTextAlign) ([]b
 	)
 }
 
+// 絵文字を生成し、画像のバイナリデータを返す。
+//
+// fgColor, bgColor: ARGB
+func GenerateEmojiWithFont(text string, fgColor, bgColor int, align EmojiTextAlign, fontpath string) ([]byte, error) {
+	return generateEmojiPng(
+		text,
+		EmojiSizeMDPI,
+		EmojiSizeMDPI,
+		fgColor,
+		bgColor,
+		align,
+		fontpath,
+	)
+}
+
 func generateEmojiPng(text string, width, height, fgColor, bgColor int, align EmojiTextAlign, fontpath string) ([]byte, error) {
 	params := C.EgGenerateParams{
 		fText:            C.CString(text),
