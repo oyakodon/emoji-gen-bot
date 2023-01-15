@@ -55,6 +55,7 @@ type EmojiGenBot struct {
 
 	channels        []string
 	noticeChannelId string
+	timeoutSeconds  int
 	fonts           []*EmojiGenBotFont
 
 	ch chan emojiEvent
@@ -219,7 +220,7 @@ func (b EmojiGenBot) respondEmojiWithChoice(
 			}
 
 			canceled = e.Cancel
-		case <-time.After(3 * time.Second):
+		case <-time.After(time.Duration(b.timeoutSeconds) * time.Second):
 		}
 
 		s.InteractionResponseDelete(i)
@@ -342,6 +343,7 @@ func NewEmojiGenBot(
 	bottoken, guildId, nickname, noticechannelid string,
 	channels []string,
 	fonts []*EmojiGenBotFont,
+	timeout int,
 ) *EmojiGenBot {
 	bot := &EmojiGenBot{
 		DiscordBot: NewDiscordBot(
@@ -353,6 +355,7 @@ func NewEmojiGenBot(
 		noticeChannelId: noticechannelid,
 		ch:              make(chan emojiEvent),
 		fonts:           fonts,
+		timeoutSeconds:  timeout,
 	}
 
 	bot.SetNickname(nickname)

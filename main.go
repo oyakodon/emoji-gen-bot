@@ -35,6 +35,7 @@ func main() {
 		conf.NoticeChannelId,
 		conf.Channels,
 		fonts,
+		conf.Timeout,
 	)
 
 	if err := bot.Run(); err != nil {

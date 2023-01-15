@@ -3,6 +3,7 @@ guildid: (DiscordのサーバID)
 channels:
   - (ボットを使いたいDiscordのチャンネルID)
 noticechannelid: (絵文字生成時に通知したいDiscordのチャンネルID)
+timeout: 180 # 秒, 絵文字生成〜登録までの許容時間
 nickname: 絵文字生成奴 # 任意の名前
 fonts:
   - id: mp1pblack

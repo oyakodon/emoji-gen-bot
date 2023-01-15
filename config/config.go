@@ -19,6 +19,7 @@ type BotConfig struct {
 	Channels []string `yaml:"channels"`
 
 	NoticeChannelId string `yaml:"noticechannelid"`
+	Timeout         int    `yaml:"timeout"`
 	Nickname        string `yaml:"nickname"`
 
 	Fonts []BotConfigFont `yaml:"fonts"`
