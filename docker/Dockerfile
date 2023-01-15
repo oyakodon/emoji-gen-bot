@@ -68,6 +68,8 @@ RUN mkdir -p /artifacts/ && \
 
 FROM alpine:3.17
 
+STOPSIGNAL SIGINT
+
 WORKDIR /work
 
 RUN apk update && \

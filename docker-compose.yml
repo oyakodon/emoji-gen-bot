@@ -4,6 +4,5 @@ services:
   app:
     build:
       context: .
-      dockerfile: './docker/Dockerfile.dev'
-    volumes:
-      - "./:/work"
+      dockerfile: './docker/Dockerfile'
+    restart: always
