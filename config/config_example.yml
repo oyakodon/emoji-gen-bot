@@ -2,4 +2,5 @@ bottoken: (DiscordのBotToken)
 guildid: (DiscordのサーバID)
 channels:
   - (ボットを使いたいDiscordのチャンネルID)
+noticechannelid: (絵文字生成時に通知したいDiscordのチャンネルID)
 nickname: 絵文字生成奴 # 任意の名前

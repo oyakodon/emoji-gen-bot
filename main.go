@@ -23,6 +23,7 @@ func main() {
 		conf.BotToken,
 		conf.GuildId,
 		conf.Nickname,
+		conf.NoticeChannelId,
 		conf.Channels,
 	)
 

@@ -12,6 +12,8 @@ type BotConfig struct {
 	GuildId  string   `yaml:"guildid"`
 	Channels []string `yaml:"channels"`
 
+	NoticeChannelId string `yaml:"noticechannelid"`
+
 	Nickname string `yaml:"nickname"`
 }
 
