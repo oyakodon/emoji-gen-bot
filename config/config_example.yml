@@ -4,3 +4,10 @@ channels:
   - (ボットを使いたいDiscordのチャンネルID)
 noticechannelid: (絵文字生成時に通知したいDiscordのチャンネルID)
 nickname: 絵文字生成奴 # 任意の名前
+fonts:
+  - id: mp1pblack
+    name: Rounded M+ 1p Black
+    path: ./assets/rounded-mplus-1p-black.ttf
+  - id: notosansmono
+    name: Noto Sans Mono CJK JP Bold
+    path: ./assets/NotoSansMonoCJKjp-Bold.otf
